@@ -1,6 +1,7 @@
 ---
 title: "An Introduction to R Markdown"
-author: Dr. Alison Hill
+subtitle: "Forskninglunsj, NSSF"
+author: Busenur Kizilaslan, PhD
 date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
@@ -24,8 +25,10 @@ params:
 options(htmltools.dir.version = FALSE)
 episode_counter <- 0
 knitr::opts_chunk$set(
-  collapse = TRUE,   
-  comment = "#>"
+	message = FALSE,
+	warning = FALSE,
+	collapse = TRUE,
+	comment = "#>"
 )
 ```
 
@@ -37,39 +40,121 @@ library(arsenal)
 library(janitor)
 library(scico)
 library(cowplot)
+
+# install.packages("devtools")
+devtools::install_github("hadley/emo")
 ggplot2::theme_set(ggplot2::theme_minimal())
+
+mockdata <- read_csv(here::here("mockpaper/data/mockdata.csv")) %>% 
+  mutate_at(vars(starts_with("ae_")), ~as.factor(.)) %>% 
+  mutate(fu_fct = fct_recode(as.factor(fu_stat), 
+                             "Lived" = "1", 
+                             "Died" = "2")) %>% 
+  filter(!site == "Nur-Sultan") 
 ```
 
-```{r load-data, include=FALSE}
-mockdata <- read_csv(here::here("mockpaper/data/mockboston.csv")) 
+
+class: title-slide, right, bottom
+background-image: url(images/main2.jpg)
+
+
+# An Introduction to R Markdown
+
+### Busenur KIZILASLAN, PhD 
+
+---
+
+<br>
+
+.pull-left[
+
+```{r echo=FALSE, out.width="250%", fig.align='center'}
+knitr::include_graphics("images/commun.png")
 ```
+]
 
+.pull-right[
 
-class: title-slide, right, top
+<br>
 
+<br>
 
-# `r rmarkdown::metadata$title`
+<br>
 
-## `r rmarkdown::metadata$author` &#183; RStudio
+Slides by: <https://www.apreshill.com/>
 
-#### <https://rstd.io/rmd4cdc>
+<br>
+
+Artworks by: <https://allisonhorst.com/>
+]
+---
+class: bottom center
+background-image: url(images/projs.png)
+background-position: 50% 10%
+background-size: 70%
+
+## .big-text[Write. Code. Share. Repeat.]
+
+---
+class: top, center
+background-image: url(images/rmd_flowchart.png)
+background-position: 50% 50%
+background-size: 100%
+
+# How it works
+
+---
+class: top center
+background-image: url(images/fauna.png)
+background-position: 50% 90%
+background-size: 50%
+
+# Who uses it?
+
+--
+
+.pull-left[
+.center[
+Researchers
+]
+]
+
+--
+
+.pull-right[
+.center[
+Data Scientists
+]
+]
 
 
 
 ---
-class: middle, center
+class: middle
+background-image: url(images/knit.png)
+background-position: 90% 50%
+background-size: 25%
 
-# <i class="fas fa-cloud"></i>
+# How do they use it?
 
-# Go here and log in (free):
+--
 
-https://rstd.io/rmd4medicine-cloud
++ Scientific communication 
+
+
+--
+
++ Team collaboration
+
+--
+
++ Teaching (& learning) out loud
 
 
 ---
 layout: true
 
-<div class="my-footer"><span>https://rstd.io/rmd4cdc</span></div>
+<div class="my-footer"><span>Faglunsj, NSSF, 2024</span></div>
 
 ---
 class: inverse, middle, center
@@ -98,7 +183,7 @@ class: inverse, middle, center
 
 --
 
-1. A tool for integrating prose, code, and results.
+1. A tool for integrating text, code, and results.
 
 --
 
@@ -107,154 +192,6 @@ class: inverse, middle, center
 --
 
 1. Wizardry.
-
----
-
-
-# What is R Markdown?
-
-1. ["An authoring framework for data science."](https://rmarkdown.rstudio.com/lesson-1.html) (`r emo::ji("heavy_check_mark")`)
-
-1. [A document format (`.Rmd`).](https://bookdown.org/yihui/rmarkdown/) (`r emo::ji("heavy_check_mark")`)
-
-1. [An R package named `rmarkdown`.](https://rmarkdown.rstudio.com/docs/) (`r emo::ji("heavy_check_mark")`)
-
-1. ["A file format for making dynamic documents with R."](https://rmarkdown.rstudio.com/articles_intro.html) (`r emo::ji("heavy_check_mark")`)
-
-1. ["A tool for integrating text, code, and results."](https://r4ds.had.co.nz/communicate-intro.html) (`r emo::ji("heavy_check_mark")`)
-
-1. ["A computational document."](http://radar.oreilly.com/2011/07/wolframs-computational-documen.html) (`r emo::ji("heavy_check_mark")`)
-
-1. Wizardry. (`r emo::ji("wizard")`)
-
-
----
-background-image: url(images/rmarkdown_wizards.png)
-background-size: contain
-
-.footnote[Art by [Allison Horst](https://twitter.com/allison_horst?lang=en)]
-
----
-class: inverse, middle, center
-
-# Why R Markdown?
-
----
-class: center
-background-image: url(https://media.giphy.com/media/11fDMHAzihB8D6/source.gif)
-
-# Reproducibility crisis? 
-
-???
-
-We are not here today to solve science or medicine's reproducibility crisis.
-
-What I do think R Markdown can help you with today when you leave here is to tackle two other crises: one I think of as the confidence crisis...
-
----
-class: center
-background-image: url(https://media.giphy.com/media/OPZZ6KWJOZ3AA/source.gif)
-
-# Confidence crisis
-
----
-class: center
-background-image: url(https://dickbrouwer.com/img/meeting_cheese.png)
-background-size: contain
-
-# `r emo::ji("cheese")` Cheese crisis `r emo::ji("cheese")`
-
-.footnote[https://dickbrouwer.com/blog/a-guide-to-better-meetings/]
-
----
-class: center
-background-image: url(images/remote-crisis.jpg)
-background-size: cover
-
-# `r emo::ji("rotating_light")` Current crisis `r emo::ji("rotating_light")`
-
----
-class: middle, center
-
-# Change your mental model
-
-.pull-left[
-
-### Source &harr; output
-
-```{r echo=FALSE, out.width="50%"}
-knitr::include_graphics("images/word.png")
-```
-
-]
-
-.pull-right[
-
-### Source &rarr; output
-
-```{r echo=FALSE, out.width="50%"}
-knitr::include_graphics("images/rmd-file.png")
-```
-
-]
-
----
-class: middle, center
-
-# Change your mental model
-
-.pull-left[
-
-### Source &harr; output
-
-```{r echo=FALSE, out.width="50%"}
-knitr::include_graphics("images/haba-elise.jpg")
-```
-
-]
-
-.pull-right[
-
-### Source &rarr; output
-
-```{r echo=FALSE, out.width="50%"}
-knitr::include_graphics("images/doll.png")
-```
-
-]
-
----
-background-image: url(images/welliewishers/Slide1.png)
-background-size: cover
-class: top, center
-
-.footnote[https://www.americangirl.com/shop/c/welliewishers]
-
----
-background-image: url(images/welliewishers/Slide2.png)
-background-size: cover
-class: top, center
-
-.footnote[https://www.americangirl.com/shop/c/welliewishers]
-
----
-class: middle, inverse, center
-
-# Same ~~doll~~ source
-
---
-
-# Different ~~outfits~~ outputs
-
----
-class: middle, center
-
-# `html_document`
-
-```{r echo=FALSE, out.width="40%"}
-knitr::include_graphics("images/doll.png")
-```
-
 
 ---
 class: middle, center
@@ -279,32 +216,6 @@ background-image: url(images/card1.png)
 background-size: contain
 
 .footnote[https://www.dear-data.com/]
-
-
----
-
-# metadata: YAML
-
-.pull-left[
-
-_"YAML Ain't Markup Language"_
-
-
-```yaml
----
-key: value
----
-```
-
-]
-
-.pull-right[
-
-```{r echo=FALSE, out.width="75%", fig.align='center'}
-knitr::include_graphics("images/orchestra.jpg")
-```
-
-]
 
 ---
 class: middle, center
@@ -404,69 +315,18 @@ Using the `THEME:` key in our YAML, we changed our font and colors.
 And we have this nice table of contents floating off to the side...
 
 ---
-class: middle
-
-# Check-in
-
-.pull-left[
-How do you use only the **default** output options?
-
-(a)
-```yaml
----
-output: html_document()
----
-```
-(b)
-```yaml
----
-output: html_document
----
-```
-
-]
-
---
-
-.pull-right[
-How do you add an output **option** to a format in your YAML?
-
-(a)
-```yaml
----
-output: 
-  html_document: 
-    toc: true
----
-```
-
-(b)
-```yaml
----
-output: 
-  html_document(toc=true)
----
-```
-
-]
-
----
 class: middle, center
 
 # Output formats
 
 
-
-
 ---
 class: middle, center
 
 
-```{r echo=FALSE, out.width="40%", fig.link="https://rmarkdown.rstudio.com/docs/reference/index.html#section-output-formats"}
+```{r echo=FALSE, out.width="50%", fig.link="https://rmarkdown.rstudio.com/docs/reference/index.html#section-output-formats"}
 knitr::include_graphics("images/rmdbase-formats.png")
 ```
-
-https://rmarkdown.rstudio.com/docs/reference/index.html#section-output-formats
 
 ---
 
@@ -500,61 +360,6 @@ This is a great way to "control" your knit button!
 Notice that when you knit, it respects those output options in your YAML.
 
 This way you "save" your output options
-
-
-
----
-class: middle
-
-# Check-in
-
-.pull-left[
-How do you add another output **format** to your YAML?
-
-(a)
-```yaml
----
-output: 
-  html_document: default
-  word_document: default
----
-```
-(b)
-```
----
-output: 
-  html_document()
-  word_document()
----
-```
-
-]
-
---
-
-
-.pull-right[
-How do you now add output **options** to your YAML?
-
-(a)
-```yaml
----
-output: 
-  html_document: 
-    toc: true
-  word_document: default
----
-```
-(b)
-```
----
-output: 
-  html_document(toc=true)
-  word_document(default)
----
-```
-
-]
 
 ---
 class: middle, center
@@ -595,46 +400,7 @@ knitr::include_graphics("https://raw.githubusercontent.com/rstudio/hex-stickers/
 ```
 
 ---
-class: middle, left
 
-```{r echo=FALSE}
-knitr::include_url("https://rstudio.github.io/distill/")
-```
-
-
----
-class: middle
-
-.center[
-# Use an extension package
-]
-
-
-.pull-left[
-```{r echo = FALSE}
-yml_empty() %>% 
-  yml_author("Your name here") %>% 
-  yml_title("Your title here") %>% 
-  yml_output(distill::distill_article(),
-             bookdown::html_document2()) %>% 
-  asis_yaml_output()
-```
-]
-
-.pull-right[
-```{r echo = FALSE}
-yml_empty() %>% 
-  yml_author("Your name here") %>% 
-  yml_title("Your title here") %>% 
-  yml_output(distill::distill_article(toc = TRUE),
-             bookdown::html_document2(toc = TRUE, theme = "flatly", toc_float = TRUE)) %>% 
-  asis_yaml_output()
-```
-]
-
-
-
----
 template: card0
 
 ---
@@ -646,13 +412,6 @@ background-image: url(images/card2.png)
 background-size: contain
 
 .footnote[https://www.dear-data.com/]
-
----
-class: center, middle
-
-# Do this! `r emo::ji("point_down")`
-
-# https://commonmark.org/help/tutorial/
 
 ---
 
@@ -698,27 +457,54 @@ class: center, middle
 
 ---
 
+<br>
+
 # <center>Text</center>
 
 --
 
 .pull-left[
 ```markdown
-Childhood **vaccines**  
-are one of the  
-_great triumphs_  
-of modern medicine. 
+Why do programmers prefer **dark mode**? 
+Because the light attracts _bugs_!
+```
+
+<br>
+
+```{r echo=FALSE, out.width="75%", fig.align='center'}
+knitr::include_graphics("https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXlyeXpwYWxpNGQyY2NteWo5ZGtpajZzdDB4NTU0NXlxOGx5dGNxcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZqlvCTNHpqrio/giphy.gif")
 ```
 ]
 
 --
 
 .pull-right[
+Why do programmers prefer **dark mode**? 
+Because the light attracts _bugs_!
+]
 
-Childhood **vaccines**  
-are one of the  
-_great triumphs_  
-of modern medicine. 
+---
+
+<br>
+
+# <center>Text</center>
+
+--
+
+<br>
+
+.pull-left[
+```markdown
+In Norway, we ~~freeze~~ fix bugs
+in our code quickly. 
+```
+]
+
+--
+
+.pull-right[
+In Norway, we ~~freeze~~ fix bugs
+in our code quickly. 
 
 ]
 
@@ -783,21 +569,20 @@ roll out in developing countries:
 
 # <center>Images</center>
 
---
-
-.pull-left[
-```markdown
-Receiving rubella vaccination, Brazil, 2008.
-![](http://bit.ly/VaccineBySandraRugio)
+```{r echo=TRUE, out.width="50%"}
+# It's Alive
+knitr::include_graphics("images/doc-live.jpg")
 ```
-]
 
---
 
-.pull-right[
-Receiving rubella vaccination, Brazil, 2008.
-![](http://bit.ly/VaccineBySandraRugio)
-]
+---
+
+# <center>Images</center>
+
+```{r echo=TRUE, out.width="30%"}
+# The Scream, 1893.
+knitr::include_graphics("http://bit.ly/munchNO")
+```
 
 ---
 
@@ -805,61 +590,28 @@ Receiving rubella vaccination, Brazil, 2008.
 
 --
 
+```markdown
+[The Scream](https://en.wikipedia.org/wiki/The_Scream)
+```
+
+[The Scream](http://bit.ly/munchNO)
+
+--
+
+<br>
+
+# <center>Equations</center>
+
 .pull-left[
 ```markdown
-[Photo](https://en.wikipedia.org/wiki/Vaccine)
+$\sum_{i = 1}^{n}(y_{i}-\hat{y})^2$
+```]
 
-Receiving rubella vaccination, Brazil, 2008.
-![](http://bit.ly/VaccineBySandraRugio)
-```
-]
-
---
 
 .pull-right[
-[Photo](https://en.wikipedia.org/wiki/Vaccine)
-
-Receiving rubella vaccination, Brazil, 2008.
-![](http://bit.ly/VaccineBySandraRugio)
+$\sum_{i = 1}^{n}(y_{i}-\hat{y})^2$
 ]
 
----
-name: 03-formative
-class: middle
-
-# Check-in
-
---
-
-.pull-left[
-
-How do you add headers in Markdown?
-
-`! Header`
-
-`- Header`
-
-`# Header`
-
-`1. Header`
-
-]
-
---
-
-.pull-right[
-
-What about lists? Bulleted? Numbered?
-
-`! Item 1`
-
-`- Item 1`
-
-`# Item 1`
-
-`1. Item 1`
-
-]
 
 ---
 template: card0
@@ -879,173 +631,6 @@ background-size: contain
 class: middle, center, inverse
 
 # `code` -> plots
----
-
-# Code chunks
-
-.pull-left[
-
-````
-```{r}`r ''`
-mockdata %>% 
-  distinct(arm)
-```
-````
-
-What is the fate of this chunk?
-
-]
-
---
-
-.pull-right[
-
-```{r}
-mockdata %>% 
-  distinct(arm)
-```
-
-]
-
----
-
-# Code chunks
-
-
-.pull-left[
-
-````
-```{r}`r ''`
-n_sites <- n_distinct(mockdata$site)
-```
-````
-
-What fate do you predict here?
-
-]
-
---
-
-.pull-right[
-
-```{r}
-n_sites <- n_distinct(mockdata$site)
-```
-
-  
-]
-
----
-
-# Code chunks
-
-
-.pull-left[
-
-````
-```{r}`r ''`
-n_sites <- n_distinct(mockdata$site)
-n_sites
-```
-````
-
-]
-
---
-
-.pull-right[
-
-```{r}
-n_sites <- n_distinct(mockdata$site)
-n_sites
-```
-
-  
-]
-
-
----
-
-```{r load-data2, include=FALSE}
-mockdata <- read_csv(here::here("mockpaper/data/mockdata.csv")) %>%
-  mutate(fu_fct = fct_recode(as.factor(fu_stat), 
-                             "Lived" = "1", 
-                             "Died" = "2")) %>% 
-  mutate_at(vars(starts_with("ae_")), ~as.factor(.))
-```
-
-```{r include = FALSE, fig.show="hold", out.width='25%', echo = FALSE, fig.retina=3}
-source('figs.R')
-age_histogram
-surv_pct_plot
-surv_days_plot
-ae_pct_plot
-```
-
-
-# Including plots
-
-.pull-left[
-```{r age-hist-print1, fig.show='hide'}
-# PLOT: Age distribution -------------------------------------------------------
-ggplot(mockdata, aes(age)) +
-  geom_histogram(color = 'white',
-                 fill = scico(1, 
-                              begin = .3, 
-                              palette = "berlin"),
-                 bins = 20) +
-  labs(x = "Age", 
-       y = "Count") +
-  scale_y_continuous(
-    breaks = scales::pretty_breaks()
-  )
-```
-
-Will this print?
-
-]
-
---
-
-.pull-right[
-```{r ref.label='age-hist-print1', echo=FALSE, fig.retina=3}
-```
-
-]
-
----
-
-# Including plots
-
-.pull-left[
-```{r age-hist}
-# PLOT: Age distribution -------------------------------------------------------
-age_histogram <- 
-  ggplot(mockdata, aes(age)) +
-  geom_histogram(color = 'white',
-                 fill = scico(1, 
-                              begin = .3, 
-                              palette = "berlin"),
-                 bins = 20) +
-  labs(x = "Age", 
-       y = "Count") +
-  scale_y_continuous(
-    breaks = scales::pretty_breaks()
-  )
-```
-
-What about this?
-
-]
-
---
-
-.pull-right[
-```{r ref.label='age-hist', echo=FALSE}
-```
-
-]
-
 
 ---
 
@@ -1088,13 +673,53 @@ Answer: it has to print!
 
 ---
 
+# Plotly
+
+```{r gender_gap, echo=FALSE, message=FALSE, warning=FALSE, out.width="90%", out.height= "55%"}
+library(plotly)
+
+data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
+
+data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC',
+                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
+                          'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
+
+gender_gap <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~Gap, color = ~State, colors = 'Paired',
+        #Choosing the range of the bubbles' sizes:
+        sizes = c(10, 50),
+        marker = list(opacity = 0.5, sizemode = 'diameter'))
+gender_gap <- gender_gap %>% layout(title = 'Gender Gap in Earnings per University',
+         xaxis = list(showgrid = FALSE),
+         yaxis = list(showgrid = FALSE),
+         showlegend = FALSE)
+
+gender_gap
+```
+
+<br>
+
+**plotly** is an R package for creating interactive web-based graphs via the open source JavaScript graphing library plotly.js
+
+---
+
+# Plotly
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', out.width="90%", out.height= "55%"}
+fig2 <- plot_ly(x = ~rnorm(50), type = "box")
+fig2 <- fig2 %>% add_trace(x = ~rnorm(50, 1))
+fig2 <- fig2 %>% add_trace(z = ~rnorm(70, 255))
+fig2 <- fig2 %>% add_trace(t = ~rnorm(10, 0,1))
+fig2 <- fig2 %>% add_trace(k = ~rnorm(5, 10, 1))
+
+
+fig2
+```
+
+
+---
+class: middle, center
+
 # Chunk options for plots
-
-- fig resolution
-- fig size
-- [fig "device"](https://r4ds.had.co.nz/graphics-for-communication.html#other-important-options)
-
-.footnote[https://yihui.name/knitr/options/#plots]
 
 ---
 
@@ -1135,34 +760,6 @@ See also:
 https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing
 
 ]
-
----
-
-# fig.path
-
-````
-```{r fig.path="figs/", echo=FALSE}`r ''`
-ae_pct_plot
-```
-````
-
-```{r echo=FALSE, fig.retina=3, out.width='70%', fig.asp=.5}
-ae_pct_plot
-```
-
----
-
-# fig.path
-
-````
-```{r ae-plot, fig.path="figs/", echo=FALSE}`r ''`
-ae_pct_plot
-```
-````
-
-```{r ae-plot, echo=FALSE, fig.retina=3, out.width='70%', fig.asp=.5}
-ae_pct_plot
-```
 
 ---
 
@@ -1288,8 +885,6 @@ age_histogram
 
 ]
 
-
-
 ---
 
 # Cross-reference a figure
@@ -1371,26 +966,9 @@ library(tidyverse)
 ]
 
 ---
+class: middle, center
 
 # Other useful chunk options
-
-.pull-left[
-
-````
-```{r}`r ''`
-glimpse(mockdata)
-```
-````
-
-]
-
-.pull-right[
-
-```{r}
-glimpse(mockdata)
-```
-
-]
 
 ---
 
@@ -1460,34 +1038,6 @@ glimpse(mockdata)
 
 ---
 
-# Using chunk options
-
-.pull-left[
-
-````
-```{r echo=TRUE, results='hide'}`r ''`
-glimpse(mockdata)
-```
-````
-
-]
-
-.pull-right[
-
-```{r echo=TRUE, results='hide'}
-glimpse(mockdata)
-```
-
-]
-
-+ Place between curly braces<br>`{r option=value}`
-
-+ Multiple options separated by commas<br>`{r option1=value, option2=value}`
-
-+ Careful! The `r` part is the **code engine** (other engines possible)
-
----
-
 # A global `setup` chunk `r emo::ji("earth_africa")`
 
 One chunk to rule them all
@@ -1535,6 +1085,42 @@ str(knitr::opts_chunk$get())
 
 ]
 
+---
+
+# Bonus
+
+```{r echo=TRUE}
+x <- 3 + 5
+```
+
+```markdown
+No output
+```
+
+--
+
+<br>
+
+```{r echo=TRUE}
+x <- 3 + 5
+x
+```
+
+<br>
+
+--
+
+.pull-left[
+
+```markdown
+We can mention the value directly as 'r x'.
+```
+
+]
+
+.pull-right[
+We can mention the value directly as `r x`.
+]
 
 ---
 template: card0
@@ -1598,131 +1184,14 @@ class: center
 
 ]
 
----
-class: middle, center, inverse
-
-# Tables
-
-![](https://media.giphy.com/media/i9c6lFmOSXKZW/giphy.gif)
-
----
-class: center, middle
-
-# Two table types
-
-
-.pull-left[
-
-### for you
-
-```{r echo=FALSE}
-knitr::include_graphics("images/tables-you.jpg")
-```
-
-
-]
-
---
-
-.pull-right[
-
-### for everyone else
-
-```{r echo=FALSE}
-knitr::include_graphics("images/tables-them.jpg")
-```
-]
-
----
-
-.pull-left[
-
-![](images/imani-_TuIdedBPwQ-unsplash.jpg)
-]
-
-.pull-right[
-![](images/gear_shift.jpg)
-]
-
-.footnote[Images from [Unsplash](https://unsplash.com/photos/_TuIdedBPwQ) and [Wikipedia](https://commons.wikimedia.org/wiki/File:FIAT_500L_gear_shift.jpg)]
-
 
 ---
 
 # Let's try using data now
 
-```{r ref.label='load-data2'}
+```{r }
+head(mockdata)
 ```
-
----
-class: middle
-
-.left-column[
-
-![](https://raw.githubusercontent.com/sfirke/janitor/master/man/figures/logo_small.png)
-]
-
-.right-column[
-# the janitor package
-
-<http://sfirke.github.io/janitor/>
-]
-
----
-
-# 1-way frequency `tabyl()`
-
-
-.pull-left[
-
-```{r}
-mockdata %>% 
-  tabyl(arm)
-```
-
-] 
-
---
-
-.pull-right[
-
-```{r}
-mockdata %>% 
-  tabyl(arm) %>% 
-  adorn_totals("row") %>%
-  adorn_pct_formatting()
-```
-
-]
-
----
-
-# 2-way frequency `tabyl()`
-
-
-.pull-left[
-
-```{r}
-mockdata %>% 
-  tabyl(arm, fu_fct)
-```
-
-] 
-
---
-
-.pull-right[
-
-```{r}
-mockdata %>% 
-  tabyl(arm, fu_fct) %>% 
-  adorn_totals("row") %>% 
-  adorn_percentages() %>%
-  adorn_pct_formatting() %>%
-  adorn_ns()
-```
-
-]
 
 ---
 class: middle
@@ -1751,31 +1220,121 @@ background-size: contain
 
 ---
 
-.pull-left[
+# GT Table
 
-```{r}
+````
+```{r }`r ''`
 mockdata %>% 
-  tabyl(arm, fu_fct) %>% 
-  gt::gt()
+  select(country, sex, age, bmi, fu_fct) %>% 
+  group_by(sex, country) %>% 
+  summarise(mean_age = mean(age), 
+            max_bmi = max(bmi, na.rm = T),
+            death = sum(fu_fct == 'Died')) 
+```
+````
+
+```{r echo=FALSE}
+library(gt)
+mockdata %>% 
+  select(country, sex, age, bmi, fu_fct) %>% 
+  group_by(sex, country) %>% 
+  summarise(mean_age = mean(age), 
+            max_bmi = max(bmi, na.rm = T),
+            death = sum(fu_fct == 'Died')) 
+
 ```
 
-] 
+
+---
+
+# GT Table
+
+.pull-left[
+
+````
+```{r }`r ''`
+mockdata %>% 
+  select(country, sex, age, bmi, fu_fct) %>% 
+  group_by(sex, country) %>% 
+  summarise(mean_age = mean(age), 
+            max_bmi = max(bmi, na.rm = T),
+            death = sum(fu_fct == 'Died')) %>% 
+  gt()
+```
+````
+]
 
 --
 
 .pull-right[
-
-```{r}
+```{r echo=FALSE}
+library(gt)
 mockdata %>% 
-  tabyl(arm, fu_fct) %>% 
-  adorn_totals("row") %>% 
-  adorn_percentages() %>%
-  adorn_pct_formatting() %>%
-  adorn_ns() %>%
+  select(country, sex, age, bmi, fu_fct) %>% 
+  group_by(sex, country) %>% 
+  summarise(mean_age = mean(age), 
+            max_bmi = max(bmi, na.rm = T),
+            death = sum(fu_fct == 'Died')) %>% 
   gt::gt()
+
+```
+]
+
+---
+
+# GT Table
+
+.pull-left[
+
+````
+```{r }`r ''`
+library(gtExtras)
+mockdata %>% 
+  select(country, sex, age, bmi, fu_fct) %>% 
+  group_by(sex, country) %>% 
+  summarise(mean_age = round(mean(age),0), 
+            max_bmi = round(max(bmi, na.rm = T),2), 
+            death = sum(fu_fct == 'Died')/1356) %>% 
+  gt::gt() %>% 
+  gtExtras::gt_add_divider(columns = c('country', 'max_bmi'), 
+                           weight = px(2), color = '#d7d6d7', 
+                           style = 'dotted') %>% 
+  fmt_percent( columns = c('death'), decimals = 1) %>% 
+  cols_label(country = 'Country', mean_age = 'Mean Age', 
+             max_bmi = 'Maximum BMI', death = 'Percentage of Death') %>% 
+  tab_options(column_labels.background.color = '#dbf0fa') %>% 
+  tab_style(style = list(cell_text(weight = 'bold')), 
+            locations = cells_body(columns = 5, rows = 5)) 
+```
+````
+]
+
+
+.pull-right[
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(gtExtras)
+mockdata %>% 
+  select(country, sex, age, bmi, fu_fct) %>% 
+  group_by(sex, country) %>% 
+  summarise(mean_age = round(mean(age),0), 
+            max_bmi = round(max(bmi, na.rm = T),2), 
+            death = sum(fu_fct == 'Died')/1356) %>% 
+  gt::gt() %>% 
+  gtExtras::gt_add_divider(columns = c('country', 'max_bmi'), 
+                           weight = px(2), color = '#d7d6d7', 
+                           style = 'dotted') %>% 
+  fmt_percent( columns = c('death'), decimals = 1) %>% 
+  cols_label(country = 'Country', mean_age = 'Mean Age', 
+             max_bmi = 'Maximum BMI', death = 'Percentage of Death') %>% 
+  tab_options(column_labels.background.color = '#dbf0fa') %>% 
+  tab_style(style = list(cell_text(weight = 'bold')), 
+            locations = cells_body(columns = 5, rows = 5))  %>% 
+  cols_align(align = 'center', columns = 3:5)
+  
 ```
 
 ]
+
 
 ---
 class: middle
@@ -1794,14 +1353,12 @@ class: middle
 ---
 class: middle
 
-# A `tbl_summary()`
-
 .left-column[
-```{r sum-tbl, results='hide', warning=FALSE, message=FALSE}
+```{r sum-tbl, results='hide', warning=FALSE, message=FALSE, out.width='70%'}
 library(gtsummary)
 mockdata %>% 
-  select(arm, sex) %>% 
-  tbl_summary(by = arm) %>% 
+  select(country, sex, age, bmi, fu_fct) %>% 
+  tbl_summary(by = sex) %>% 
   add_p() %>% 
   add_overall()
 ```
@@ -1814,28 +1371,6 @@ mockdata %>%
 
 ]
 
----
-class: middle
-
-# A bigger `tbl_summary()`
-
-.left-column[
-
-```{r big-sum-tbl, results='hide', warning=FALSE, message=FALSE}
-library(gtsummary)
-mockdata %>% 
-  select(arm, 
-         starts_with("ae")) %>% 
-  tbl_summary(by = arm)  
-```
-]
-
-.right-column[
-```{r ref.label='big-sum-tbl', echo=FALSE}
-
-```
-
-]
 
 ---
 class: middle, center
@@ -1918,85 +1453,8 @@ knitr::include_graphics("https://raw.githubusercontent.com/rstudio/hex-stickers/
 
 > &mdash; [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
 
-
 ---
 
-# Check-in
-
-
-Which of the following is **NOT** a part of R Markdown basic anatomy?
-
-1. Metadata
-
-1. Text
-
-1. Data
-
-1. Code
-
-1. Output
-
-
----
-
-# Mad libs check-in
-
-```markdown
- ___________ is written at the top between `---` in ________.
-    noun                                             syntax
-                                                     
-  ______ is written in Markdown.
-   noun         
-  
-  ______ is written in R (or other programming language).
-   noun   
-   
-  The ______ package evaluates the code and produces the ______.
-       noun                                               noun
-```
-
-
----
-
-# Mad libs check-in
-
-```markdown
- Metadata is written at the top between `---` in YAML.
-   (noun)                                      (syntax)
-                                                     
-  Text is written in Markdown.
- (noun)         
-  
-  Code is written in R (or other programming language).
- (noun)   
-   
-  The knitr package evaluates the code and produces the output.
-     (noun)                                             (noun) 
-```
-
-
-```{r load-data3, include=FALSE}
-mockdata_all <- read_csv(here::here("mockpaper/data/mockdata.csv")) %>% 
-  mutate_at(vars(starts_with("ae_")), ~as.factor(.)) %>% 
-  mutate(fu_fct = fct_recode(as.factor(fu_stat), 
-                             "Lived" = "1", 
-                             "Died" = "2"))  
-
-# see my note below re: sites
-mockdata <- mockdata_all %>% 
-  filter(!site == "Nur-Sultan")
-
-source('figs.R')
-```
-
-
-
----
-
-# Projects
-
-
----
 class: center, middle
 
 # R projects
@@ -2101,7 +1559,6 @@ knitr::include_graphics("images/horst_here.png")
 ```
 ]
 
-https://whattheyforgot.org/project-oriented-workflow.html#setwd
 
 ---
 
@@ -2122,19 +1579,39 @@ https://jenthompson.me/examples/progressdash.html
 https://jenthompson.me/2018/02/09/flexdashboards-monitoring/
 
 ---
-class: middle, center
+class: center
 
-<https://bookdown.org/yihui/bookdown/>
+# Bookdown Lecture Notes
 
-<iframe src="https://bookdown.org/yihui/bookdown/" height="600" width="1200" frameborder="0"></iframe> 
+```{r echo=FALSE, out.width="90%", fig.link="https://busenurk.github.io/rstudio/_book/index.html"}
+knitr::include_graphics("images/bookdown.png")
+```
+
+
 
 ---
-class: center, middle
+class: center
+
+.pull-left[
+
+## Personal Web Page
+
+```{r echo=FALSE, out.width="80%", fig.link="https://busenurk.github.io/"}
+knitr::include_graphics("images/pers_web.png")
+```
+]
 
 
-<https://bookdown.org/yihui/blogdown/>
+--
 
-<iframe src="https://academic-demo.netlify.com/" height="600" width="1200" frameborder="0"></iframe> 
+.pull-right[
+
+## R Package
+
+```{r echo=FALSE, out.width="80%", fig.link="https://github.com/busenurk/rinfis"}
+knitr::include_graphics("images/rinfis.png")
+```
+]
 
 ---
 class: middle, center, inverse
@@ -2160,7 +1637,7 @@ class: middle
 
 _Help > Cheatsheets > RStudio IDE_
 
-```{r echo = FALSE, out.width = "50%", fig.link="https://www.rstudio.com/resources/cheatsheets/#ide"}
+```{r echo = FALSE, out.width = "70%", fig.link="https://www.rstudio.com/resources/cheatsheets/#ide"}
 knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/0dc0efccfaf638de8be4ce43e2bab8a91541d3d2/c4fdc/wp-content/uploads/2018/08/rstudio-ide.png")
 ```
 ]
@@ -2177,7 +1654,7 @@ class: middle
 .right-column[
 _Help > Cheatsheets > R Markdown Cheat Sheet_
 
-```{r echo = FALSE, out.width="50%", fig.link="https://www.rstudio.com/resources/cheatsheets/#rmarkdown"}
+```{r echo = FALSE, out.width="70%", fig.link="https://www.rstudio.com/resources/cheatsheets/#rmarkdown"}
 knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/65dffd1bdcaa0025006262164d98e8068e8b4387/c3895/wp-content/uploads/2018/08/rmarkdown-2.0.png")
 ```
 ]
@@ -2194,7 +1671,7 @@ class: middle
 .right-column[
 _Help > Cheatsheets > R Markdown Reference Guide_
 
-```{r echo = FALSE, out.width = "40%", fig.link="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf"}
+```{r echo = FALSE, out.width = "50%", fig.link="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf"}
 knitr::include_graphics("https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference-guide.png")
 ```
 
@@ -2250,7 +1727,7 @@ class: middle
 
 .right-column[
 
-```{r echo = FALSE, out.width = "80%", fig.link="https://rmarkdown.rstudio.com/"}
+```{r echo = FALSE, out.width = "90%", fig.link="https://rmarkdown.rstudio.com/"}
 knitr::include_graphics("images/rmarkdown-site.png")
 ```
 ]
@@ -2266,7 +1743,7 @@ class: middle
 
 .right-column[
 
-```{r echo = FALSE, out.width = "80%", fig.link="https://rmarkdown.rstudio.com/docs/"}
+```{r echo = FALSE, out.width = "90%", fig.link="https://rmarkdown.rstudio.com/docs/"}
 knitr::include_graphics("images/rmarkdowndocs-site.png")
 ```
 ]
@@ -2292,19 +1769,11 @@ knitr::include_graphics("images/rmarkdowncommunity-site.png")
 ---
 class: middle
 
-.left-column[
-# `r emo::ji("robot")`
-]
+# Here's a template for you to use.
 
-.right-column[
-
-```{r echo = FALSE, out.width = "80%", fig.link="https://rmarkdown.rstudio.com/lesson-6.html"}
-knitr::include_graphics("https://raw.githubusercontent.com/rstudio/rmarkdown/gh-pages/lesson-images/params-1-hawaii.png")
+```{r echo = FALSE, out.width = "100%", fig.link="https://github.com/busenurk/NSFFtemp"}
+knitr::include_graphics("images/template.png")
 ```
-]
-
-.footnote[https://bookdown.org/yihui/rmarkdown/parameterized-reports.html,<br>
-https://rmarkdown.rstudio.com/lesson-6.html]
 
 
 ---
